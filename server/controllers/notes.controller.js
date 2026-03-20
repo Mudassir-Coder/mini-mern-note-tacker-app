@@ -22,7 +22,7 @@ export const getNotes = async (req, res) => {
 };
 
 export const updateNote = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   const { title, content, tag } = req.body;
   if (!id) {
     throw new AppError("Please provide an ID of the note");
@@ -38,7 +38,7 @@ export const updateNote = async (req, res) => {
 };
 
 export const deleteNote = async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   const note = NotesModel.findByIdAndDelete({ id });
   if (!note) {
     throw new AppError(
