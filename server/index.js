@@ -12,10 +12,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/notes", notesRouter);
-// Routes
-app.get("/", (req, res) => {
-  res.send("Hello from the server!");
-});
 
 // Start the server
 const PORT = process.env.PORT || 5000;
