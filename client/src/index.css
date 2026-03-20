@@ -1,0 +1,450 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS
+   These become Tailwind utility classes automatically in v4.
+   Usage: bg-surface, text-accent, border-border, etc.
+============================================================ */
+
+@theme {
+  /* Colors */
+  --color-bg: #0d0e14;
+  --color-surface: #13151f;
+  --color-surface2: #1a1d2a;
+  --color-faint: #2a2d3e;
+  --color-border: #252836;
+  --color-accent: #7c6af0;
+  --color-accent2: #4ecdc4;
+  --color-warn: #f4a261;
+  --color-danger: #e63946;
+  --color-text: #e8eaf0;
+  --color-muted: #6b7280;
+
+  /* Typography */
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* ============================================================
+   BASE LAYER
+   Global resets and root element defaults
+============================================================ */
+
+@layer base {
+  /* Root defaults */
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-bg text-text font-body min-h-screen;
+  }
+
+  /* Headings */
+  h1 {
+    @apply font-display text-4xl font-extrabold tracking-tight text-text;
+  }
+  h2 {
+    @apply font-display text-2xl font-bold text-text;
+  }
+  h3 {
+    @apply font-display text-lg font-semibold text-text;
+  }
+  h4 {
+    @apply font-display text-base font-semibold text-text;
+  }
+
+  /* Body copy */
+  p {
+    @apply text-muted leading-relaxed text-sm;
+  }
+
+  /* Links */
+  a {
+    @apply text-accent underline-offset-4 hover:underline transition-colors;
+  }
+
+  /* Code inline */
+  code {
+    @apply font-mono text-accent2 text-xs bg-faint px-1.5 py-0.5 rounded;
+  }
+
+  /* Textarea & Select reset */
+  textarea {
+    @apply resize-none;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+}
+
+/* ============================================================
+   COMPONENT LAYER
+   Reusable class names you can drop anywhere
+============================================================ */
+
+@layer components {
+  /* ----------------------------------------------------------
+     LAYOUT
+  ---------------------------------------------------------- */
+
+  .page-wrapper {
+    @apply max-w-5xl mx-auto px-4 sm:px-6 py-10;
+  }
+
+  .page-header {
+    @apply flex items-center justify-between mb-8;
+  }
+
+  /* ----------------------------------------------------------
+     CARDS
+  ---------------------------------------------------------- */
+
+  /* Base card — use as foundation */
+  .card {
+    @apply bg-surface2 border border-border rounded-xl p-5
+           transition-all duration-200;
+  }
+
+  /* Clickable / hoverable card */
+  .card-hover {
+    @apply cursor-pointer
+           hover:border-accent/50 hover:-translate-y-0.5;
+  }
+
+  /* Highlighted / active card */
+  .card-active {
+    @apply border-accent/40 bg-faint;
+  }
+
+  /* Dashed empty-state card */
+  .card-empty {
+    @apply border-dashed text-center py-12;
+  }
+
+  /* Note card — specific to this project */
+  /* .note-card {
+    @apply -hover;
+  }
+ */
+  .note-card-header {
+    @apply flex items-start justify-between mb-2;
+  }
+
+  .note-card-title {
+    @apply font-display font-semibold text-text text-sm leading-tight;
+  }
+
+  .note-card-body {
+    @apply text-muted text-xs leading-relaxed line-clamp-3;
+  }
+
+  .note-card-footer {
+    @apply flex items-center justify-between
+           mt-3 pt-3 border-t border-border;
+  }
+
+  .note-card-date {
+    @apply text-muted text-xs font-mono;
+  }
+
+  /* ----------------------------------------------------------
+     BUTTONS
+  ---------------------------------------------------------- */
+
+  /* Shared base */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           font-body font-medium text-sm
+           rounded-lg px-4 py-2.5
+           border border-transparent
+           transition-all duration-150 cursor-pointer
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Solid primary */
+  .btn-primary {
+    @apply bg-accent text-white
+           hover:opacity-90 hover:-translate-y-px
+           active:translate-y-0;
+  }
+
+  /* Outlined */
+  .btn-outline {
+    @apply border-border text-text bg-transparent
+           hover:border-accent hover:bg-faint;
+  }
+
+  /* Danger / destructive */
+  .btn-danger {
+    @apply border-danger/60 text-danger bg-transparent
+           hover:bg-danger/10;
+  }
+
+  /* Ghost — no border, subtle hover */
+  .btn-ghost {
+    @apply border-transparent text-muted bg-transparent
+           hover:text-text hover:bg-faint;
+  }
+
+  /* Icon-only button */
+  .btn-icon {
+    @apply p-2 border-border hover:border-accent hover:bg-faint;
+  }
+
+  /* ----------------------------------------------------------
+     FORM FIELDS
+  ---------------------------------------------------------- */
+
+  /* Shared input base */
+  .input {
+    @apply w-full bg-faint border border-border rounded-lg
+           px-3.5 py-2.5 text-sm text-text placeholder-muted
+           font-body outline-none
+           transition-all duration-150
+           focus:border-accent focus:ring-2 focus:ring-accent/20
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Error state — add alongside .input */
+  .input-error {
+    @apply border-danger focus:border-danger focus:ring-danger/20;
+  }
+
+  /* Textarea — inherits .input */
+  .textarea {
+    @apply w-full bg-faint border border-border rounded-lg
+           px-3.5 py-2.5 text-sm text-text placeholder-muted
+           font-body outline-none
+           transition-all duration-150
+           focus:border-accent focus:ring-2 focus:ring-accent/20
+           disabled:opacity-40 disabled:cursor-not-allowed
+           resize-none;
+  }
+
+  /* Select — inherits .input */
+  .select {
+    @apply w-full bg-faint border border-border rounded-lg
+           px-3.5 py-2.5 text-sm text-text placeholder-muted
+           font-body outline-none
+           transition-all duration-150
+           focus:border-accent focus:ring-2 focus:ring-accent/20
+           disabled:opacity-40 disabled:cursor-not-allowed
+           cursor-pointer;
+  }
+
+  /* Field wrapper */
+  .field {
+    @apply flex flex-col gap-1.5;
+  }
+
+  /* Label */
+  .label {
+    @apply text-xs font-mono text-muted;
+  }
+
+  /* Required star */
+  .label-required::after {
+    content: " *";
+    @apply text-danger;
+  }
+
+  /* Validation error message */
+  .field-error {
+    @apply text-danger text-xs font-mono flex items-center gap-1;
+  }
+
+  /* ----------------------------------------------------------
+     TAG BADGES
+  ---------------------------------------------------------- */
+
+  .tag {
+    @apply inline-flex items-center
+           text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full
+           border;
+  }
+
+  .tag-work {
+    @apply inline-flex items-center text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full border
+           bg-accent/15 text-violet-300 border-accent/30;
+  }
+
+  .tag-ideas {
+    @apply inline-flex items-center text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full border
+           bg-accent2/15 text-teal-300 border-accent2/30;
+  }
+
+  .tag-personal {
+    @apply inline-flex items-center text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full border
+           bg-warn/15 text-orange-300 border-warn/30;
+  }
+
+  .tag-study {
+    @apply inline-flex items-center text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full border
+           bg-danger/15 text-red-300 border-danger/30;
+  }
+
+  /* Filter tag button — clickable version */
+  .tag-btn {
+    @apply inline-flex items-center text-xs font-mono font-medium
+           px-2.5 py-0.5 rounded-full border
+           cursor-pointer transition-opacity hover:opacity-80;
+  }
+
+  /* ----------------------------------------------------------
+     NAVBAR
+  ---------------------------------------------------------- */
+
+  .navbar {
+    @apply sticky top-0 z-50
+           bg-surface border-b border-border
+           px-6 py-4;
+  }
+
+  .navbar-inner {
+    @apply max-w-5xl mx-auto flex items-center justify-between;
+  }
+
+  .navbar-brand {
+    @apply font-display font-bold text-text text-base flex items-center gap-2.5;
+  }
+
+  .navbar-logo {
+    @apply w-8 h-8 rounded-lg bg-accent
+           flex items-center justify-center
+           text-white text-sm font-bold font-display;
+  }
+
+  /* ----------------------------------------------------------
+     FILTER BAR
+  ---------------------------------------------------------- */
+
+  .filter-bar {
+    @apply flex items-center gap-2 flex-wrap;
+  }
+
+  .filter-label {
+    @apply text-xs font-mono text-muted mr-1;
+  }
+
+  /* ----------------------------------------------------------
+     EMPTY STATE
+  ---------------------------------------------------------- */
+
+  .empty-state {
+    @apply flex flex-col items-center gap-3;
+  }
+
+  .empty-state-icon {
+    @apply text-4xl;
+  }
+
+  .empty-state-title {
+    @apply font-display font-semibold text-text text-sm;
+  }
+
+  .empty-state-text {
+    @apply text-muted text-xs;
+  }
+
+  /* ----------------------------------------------------------
+     SECTION LABEL (eyebrow text above headings)
+  ---------------------------------------------------------- */
+
+  .section-label {
+    @apply text-xs font-mono tracking-widest uppercase text-accent;
+  }
+
+  /* ----------------------------------------------------------
+     DIVIDER
+  ---------------------------------------------------------- */
+
+  .divider {
+    @apply border-t border-border my-8;
+  }
+
+  /* ----------------------------------------------------------
+     LOADING / SKELETON
+  ---------------------------------------------------------- */
+
+  .skeleton {
+    @apply bg-faint rounded-lg animate-pulse;
+  }
+
+  /* ----------------------------------------------------------
+     TOAST / NOTIFICATION (for useMutation feedback)
+  ---------------------------------------------------------- */
+
+  .toast {
+    @apply fixed bottom-5 right-5 z-50
+           flex items-center gap-3
+           bg-surface2 border border-border
+           rounded-xl px-4 py-3 text-sm text-text
+           shadow-lg;
+  }
+
+  .toast-success {
+    @apply fixed bottom-5 right-5 z-50
+           flex items-center gap-3
+           bg-surface2 border border-border
+           rounded-xl px-4 py-3 text-sm text-text
+           shadow-lg
+           border-accent2/40;
+  }
+  .toast-error {
+    @apply fixed bottom-5 right-5 z-50
+           flex items-center gap-3
+           bg-surface2 border border-border
+           rounded-xl px-4 py-3 text-sm text-text
+           shadow-lg
+           border-danger/40;
+  }
+}
+
+/* ============================================================
+   UTILITIES LAYER
+   Single-purpose helpers that Tailwind doesn't ship by default
+============================================================ */
+
+@layer utilities {
+  /* Text clamping */
+  .line-clamp-2 {
+    -webkit-line-clamp: 2;
+  }
+  .line-clamp-3 {
+    -webkit-line-clamp: 3;
+  }
+
+  /* Subtle glow ring for focused/active elements */
+  .glow-accent {
+    @apply ring-2 ring-accent/20;
+  }
+
+  .glow-accent2 {
+    @apply ring-2 ring-accent2/20;
+  }
+
+  /* Truncate long text with ellipsis */
+  .truncate-text {
+    @apply overflow-hidden whitespace-nowrap text-ellipsis;
+  }
+
+  /* Full bleed inside a constrained parent */
+  .bleed {
+    @apply -mx-4 sm:-mx-6;
+  }
+}

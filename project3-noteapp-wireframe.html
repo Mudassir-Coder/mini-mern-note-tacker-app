@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 3 — Note App · Dev Reference</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #0d0e14;
+      --color-surface: #13151f;
+      --color-surface2: #1a1d2a;
+      --color-border: #252836;
+      --color-accent: #7c6af0;
+      --color-accent2: #4ecdc4;
+      --color-warn: #f4a261;
+      --color-danger: #e63946;
+      --color-text: #e8eaf0;
+      --color-muted: #6b7280;
+      --color-faint: #2a2d3e;
+      --font-display: "Syne", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+      --font-body: "DM Sans", sans-serif;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+    }
+
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #0a0b10;
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .key { color: #4ecdc4; }
+    .code-block .obj { color: #ffcb6b; }
+
+    /* WIREFRAME CONTAINER */
+    .wireframe-app {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .wireframe-bar {
+      background: #0f1018;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* COMPONENT DEMO */
+    .comp-card {
+      background: var(--color-surface2);
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+
+    /* INPUTS */
+    .demo-input {
+      width: 100%;
+      background: var(--color-faint);
+      border: 1px solid var(--color-border);
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.85rem;
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .demo-input:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+    }
+
+    .demo-input.error {
+      border-color: var(--color-danger);
+    }
+
+    .demo-input::placeholder { color: var(--color-muted); }
+
+    /* BUTTONS */
+    .btn-primary {
+      background: var(--color-accent);
+      color: white;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.88rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.88rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--color-accent); background: var(--color-faint); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--color-danger);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.88rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-danger);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-danger:hover { background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-muted);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+    }
+    .btn-ghost:hover { color: var(--color-text); background: var(--color-faint); }
+
+    /* TAG BADGE */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+    .tag-work    { background: color-mix(in srgb, #7c6af0 18%, transparent); color: #a99df5; border: 1px solid color-mix(in srgb, #7c6af0 35%, transparent); }
+    .tag-ideas   { background: color-mix(in srgb, #4ecdc4 18%, transparent); color: #7de8e2; border: 1px solid color-mix(in srgb, #4ecdc4 35%, transparent); }
+    .tag-personal{ background: color-mix(in srgb, #f4a261 18%, transparent); color: #f9c89a; border: 1px solid color-mix(in srgb, #f4a261 35%, transparent); }
+    .tag-study   { background: color-mix(in srgb, #e63946 18%, transparent); color: #f08089; border: 1px solid color-mix(in srgb, #e63946 35%, transparent); }
+
+    /* NOTE CARD */
+    .note-card {
+      background: var(--color-surface2);
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      padding: 1rem 1.1rem;
+      transition: border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .note-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+
+    /* DIVIDER */
+    hr.fancy {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 2.5rem 0;
+    }
+
+    /* STEP BADGE */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+    /* GLOW */
+    .accent-glow {
+      box-shadow: 0 0 30px color-mix(in srgb, var(--color-accent) 15%, transparent);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════ -->
+  <header class="border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)] flex items-center justify-center text-white font-display font-bold text-sm">N</div>
+        <div>
+          <p class="font-display font-700 text-[var(--color-text)] text-sm leading-none">NoteApp</p>
+          <p class="section-label mt-0.5">Project 3 · Dev Reference</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="tag tag-work">RHF + Zod</span>
+        <span class="tag tag-ideas">MERN Stack</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-12 space-y-20">
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 1 · WHAT YOU WILL BUILD
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">01 · Overview</p>
+      <h1 class="font-display text-4xl font-800 leading-tight text-[var(--color-text)] mb-4">
+        What you will build
+      </h1>
+      <p class="text-[var(--color-muted)] text-base leading-relaxed max-w-2xl mb-8">
+        A single-page note-taking app. You add notes with a title, content, and tag.
+        You can edit them inline. This project's entire purpose is to make
+        <span class="text-[var(--color-accent2)] font-mono text-sm">React Hook Form</span> and
+        <span class="text-[var(--color-accent2)] font-mono text-sm">Zod</span> click — you will
+        feel the difference immediately.
+      </p>
+
+      <!-- WHAT YOU LEARN GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        <div class="comp-card accent-glow border-[var(--color-accent)]/30">
+          <div class="w-9 h-9 rounded-lg bg-[var(--color-accent)]/15 flex items-center justify-center mb-3">
+            <span class="text-[var(--color-accent)] text-lg">📝</span>
+          </div>
+          <p class="font-display font-700 text-[var(--color-text)] mb-1.5">React Hook Form</p>
+          <p class="text-[var(--color-muted)] text-sm leading-relaxed">
+            Zero re-renders per keystroke. Replaces all your <code class="font-mono text-xs text-[var(--color-accent2)]">useState</code> for form fields. You'll feel this instantly.
+          </p>
+        </div>
+        <div class="comp-card">
+          <div class="w-9 h-9 rounded-lg bg-[var(--color-accent2)]/15 flex items-center justify-center mb-3">
+            <span class="text-[var(--color-accent2)] text-lg">🛡️</span>
+          </div>
+          <p class="font-display font-700 text-[var(--color-text)] mb-1.5">Zod Validation</p>
+          <p class="text-[var(--color-muted)] text-sm leading-relaxed">
+            Define rules as a schema (<code class="font-mono text-xs text-[var(--color-accent2)]">title min 3 chars</code>). Errors appear automatically, no manual checks.
+          </p>
+        </div>
+        <div class="comp-card">
+          <div class="w-9 h-9 rounded-lg bg-[var(--color-warn)]/15 flex items-center justify-center mb-3">
+            <span class="text-[var(--color-warn)] text-lg">🔗</span>
+          </div>
+          <p class="font-display font-700 text-[var(--color-text)] mb-1.5">hookform/resolvers</p>
+          <p class="text-[var(--color-muted)] text-sm leading-relaxed">
+            The bridge between RHF and Zod. One import, one line — they work together automatically.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 2 · APP WIREFRAME
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">02 · App Wireframe</p>
+      <h2 class="font-display text-2xl font-700 mb-2">The Full Layout</h2>
+      <p class="text-[var(--color-muted)] text-sm mb-8">This is the complete one-page app. Study the layout before writing any code.</p>
+
+      <div class="wireframe-app">
+        <!-- browser bar -->
+        <div class="wireframe-bar">
+          <div class="dot bg-red-500"></div>
+          <div class="dot bg-yellow-500"></div>
+          <div class="dot bg-green-500"></div>
+          <div class="ml-3 flex-1 bg-[var(--color-surface2)] rounded px-3 py-1 text-xs text-[var(--color-muted)] font-mono">localhost:5173</div>
+        </div>
+
+        <!-- APP CONTENT -->
+        <div class="p-6 space-y-6">
+
+          <!-- Top nav -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-display font-700 text-xl text-[var(--color-text)]">My Notes</h2>
+              <p class="text-[var(--color-muted)] text-xs font-mono mt-0.5">4 notes</p>
+            </div>
+            <button class="btn-primary text-sm px-4 py-2">+ Add Note</button>
+          </div>
+
+          <!-- TAG FILTER BAR -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[var(--color-muted)] text-xs font-mono mr-1">Filter:</span>
+            <button class="tag tag-work cursor-pointer">#work</button>
+            <button class="tag tag-ideas cursor-pointer">#ideas</button>
+            <button class="tag tag-personal cursor-pointer">#personal</button>
+            <button class="tag tag-study cursor-pointer">#study</button>
+            <button class="btn-ghost text-xs py-1">Clear</button>
+          </div>
+
+          <!-- ADD NOTE FORM (visible when + Add Note clicked) -->
+          <div class="comp-card border-[var(--color-accent)]/40">
+            <p class="section-label mb-4">Add New Note · Form</p>
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Title <span class="text-[var(--color-danger)]">*</span></label>
+                <input class="demo-input" placeholder="e.g. React Hook Form notes..." value="React Hook Form notes" />
+              </div>
+              <div>
+                <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Content <span class="text-[var(--color-danger)]">*</span></label>
+                <textarea class="demo-input resize-none" rows="3" placeholder="Write your note here...">useForm() hook replaces all useState for form fields. register() attaches a field. handleSubmit() wraps your submit handler...</textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Tag</label>
+                  <select class="demo-input">
+                    <option>work</option>
+                    <option>ideas</option>
+                    <option>personal</option>
+                    <option>study</option>
+                  </select>
+                </div>
+                <div class="flex items-end gap-2">
+                  <button class="btn-primary flex-1">Save Note</button>
+                  <button class="btn-ghost">Cancel</button>
+                </div>
+              </div>
+              <!-- ZOD ERROR EXAMPLE -->
+              <p class="text-[var(--color-danger)] text-xs font-mono">⚠ Title must be at least 3 characters</p>
+            </div>
+          </div>
+
+          <!-- NOTES GRID -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- Note Card 1 — normal -->
+            <div class="note-card">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-display font-600 text-[var(--color-text)] text-sm leading-tight">React Hook Form notes</h3>
+                <span class="tag tag-work ml-2 shrink-0">#work</span>
+              </div>
+              <p class="text-[var(--color-muted)] text-xs leading-relaxed line-clamp-3">
+                useForm() hook replaces all useState for form fields. register() attaches a field. handleSubmit() wraps your submit handler automatically...
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]">
+                <span class="text-[var(--color-muted)] text-xs font-mono">Mar 19, 2026</span>
+                <div class="flex gap-1">
+                  <button class="btn-ghost text-xs py-0.5 px-2">Edit</button>
+                  <button class="btn-ghost text-xs py-0.5 px-2 text-[var(--color-danger)] hover:text-[var(--color-danger)]">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Note Card 2 — editing state -->
+            <div class="note-card border-[var(--color-accent2)]/50 bg-[var(--color-faint)]">
+              <p class="section-label mb-2">Editing Mode ↓</p>
+              <div class="space-y-2">
+                <input class="demo-input text-sm" value="Zod schema validation" />
+                <textarea class="demo-input text-sm resize-none" rows="2">z.object() creates a schema. z.string().min(3) sets rules. zodResolver() connects to RHF.</textarea>
+                <div class="flex gap-2">
+                  <button class="btn-primary text-xs py-1.5">Update</button>
+                  <button class="btn-ghost text-xs">Discard</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Note Card 3 -->
+            <div class="note-card">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-display font-600 text-[var(--color-text)] text-sm leading-tight">Weekend ideas for the project</h3>
+                <span class="tag tag-ideas ml-2 shrink-0">#ideas</span>
+              </div>
+              <p class="text-[var(--color-muted)] text-xs leading-relaxed line-clamp-3">
+                Add a search bar. Add a "pinned" notes feature. Export notes as JSON. Try localStorage as backup...
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]">
+                <span class="text-[var(--color-muted)] text-xs font-mono">Mar 18, 2026</span>
+                <div class="flex gap-1">
+                  <button class="btn-ghost text-xs py-0.5 px-2">Edit</button>
+                  <button class="btn-ghost text-xs py-0.5 px-2 text-[var(--color-danger)]">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Note Card 4 -->
+            <div class="note-card">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-display font-600 text-[var(--color-text)] text-sm leading-tight">Groceries and errands</h3>
+                <span class="tag tag-personal ml-2 shrink-0">#personal</span>
+              </div>
+              <p class="text-[var(--color-muted)] text-xs leading-relaxed line-clamp-3">
+                Milk, eggs, bread. Pay electricity bill. Call the landlord about the tap...
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]">
+                <span class="text-[var(--color-muted)] text-xs font-mono">Mar 17, 2026</span>
+                <div class="flex gap-1">
+                  <button class="btn-ghost text-xs py-0.5 px-2">Edit</button>
+                  <button class="btn-ghost text-xs py-0.5 px-2 text-[var(--color-danger)]">Delete</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- EMPTY STATE (shown when no notes) -->
+          <div class="comp-card text-center py-8 border-dashed">
+            <p class="text-3xl mb-3">📭</p>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm mb-1">No notes yet</p>
+            <p class="text-[var(--color-muted)] text-xs">Click "Add Note" to create your first one.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LAYOUT ANNOTATION -->
+      <div class="mt-4 flex flex-wrap gap-3">
+        <div class="flex items-center gap-2 text-xs text-[var(--color-muted)]">
+          <div class="w-3 h-3 rounded bg-[var(--color-accent)]/40 border border-[var(--color-accent)]"></div>
+          <span>Form opens/closes on button click</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-[var(--color-muted)]">
+          <div class="w-3 h-3 rounded bg-[var(--color-accent2)]/40 border border-[var(--color-accent2)]"></div>
+          <span>Inline edit replaces the card</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-[var(--color-muted)]">
+          <div class="w-3 h-3 rounded bg-[var(--color-warn)]/40 border border-[var(--color-warn)]"></div>
+          <span>Tag filter is client-state only (no API call)</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 3 · MONGODB SCHEMA
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">03 · MongoDB Schema</p>
+      <h2 class="font-display text-2xl font-700 mb-2">Model: Note</h2>
+      <p class="text-[var(--color-muted)] text-sm mb-8">
+        One model. Simple. Notice how the fields map directly to your form fields — that's intentional.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Schema code -->
+        <div>
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">📄 models/Note.js</p>
+          <div class="code-block p-5">
+<span class="kw">const</span> mongoose = <span class="fn">require</span>(<span class="str">'mongoose'</span>)<br><br>
+<span class="kw">const</span> noteSchema = <span class="kw">new</span> mongoose.<span class="fn">Schema</span>(<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">title</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">type</span>: <span class="obj">String</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">required</span>: [<span class="kw">true</span>, <span class="str">'Title is required'</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">minlength</span>: [<span class="num">3</span>, <span class="str">'Min 3 characters'</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">trim</span>: <span class="kw">true</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">content</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">type</span>: <span class="obj">String</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">required</span>: [<span class="kw">true</span>, <span class="str">'Content is required'</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">trim</span>: <span class="kw">true</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">tag</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">type</span>: <span class="obj">String</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">enum</span>: [<span class="str">'work'</span>, <span class="str">'ideas'</span>, <span class="str">'personal'</span>, <span class="str">'study'</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">default</span>: <span class="str">'personal'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;{ <span class="key">timestamps</span>: <span class="kw">true</span> } <span class="cm">// adds createdAt + updatedAt</span><br>
+)<br><br>
+<span class="kw">module.exports</span> = mongoose.<span class="fn">model</span>(<span class="str">'Note'</span>, noteSchema)
+          </div>
+        </div>
+
+        <!-- Field explanation table -->
+        <div class="space-y-3">
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">📋 Field breakdown</p>
+          <div class="space-y-2">
+            <div class="comp-card py-3 px-4 flex items-start gap-3">
+              <code class="font-mono text-xs text-[var(--color-accent)] bg-[var(--color-faint)] px-2 py-0.5 rounded shrink-0">title</code>
+              <div>
+                <p class="text-[var(--color-text)] text-xs">String, required, min 3 chars, trimmed</p>
+                <p class="text-[var(--color-muted)] text-xs mt-0.5">trim removes leading/trailing spaces silently</p>
+              </div>
+            </div>
+            <div class="comp-card py-3 px-4 flex items-start gap-3">
+              <code class="font-mono text-xs text-[var(--color-accent)] bg-[var(--color-faint)] px-2 py-0.5 rounded shrink-0">content</code>
+              <div>
+                <p class="text-[var(--color-text)] text-xs">String, required, trimmed</p>
+                <p class="text-[var(--color-muted)] text-xs mt-0.5">No min — short notes are fine</p>
+              </div>
+            </div>
+            <div class="comp-card py-3 px-4 flex items-start gap-3">
+              <code class="font-mono text-xs text-[var(--color-accent)] bg-[var(--color-faint)] px-2 py-0.5 rounded shrink-0">tag</code>
+              <div>
+                <p class="text-[var(--color-text)] text-xs">Enum — only accepts 4 values</p>
+                <p class="text-[var(--color-muted)] text-xs mt-0.5">MongoDB will reject anything outside the list</p>
+              </div>
+            </div>
+            <div class="comp-card py-3 px-4 flex items-start gap-3">
+              <code class="font-mono text-xs text-[var(--color-accent2)] bg-[var(--color-faint)] px-2 py-0.5 rounded shrink-0">timestamps</code>
+              <div>
+                <p class="text-[var(--color-text)] text-xs">Auto-added: <code class="font-mono text-xs">createdAt</code> + <code class="font-mono text-xs">updatedAt</code></p>
+                <p class="text-[var(--color-muted)] text-xs mt-0.5">Free fields — use createdAt to sort & display dates</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mental model tip -->
+          <div class="mt-4 p-4 rounded-xl border border-[var(--color-warn)]/30 bg-[var(--color-warn)]/5">
+            <p class="text-[var(--color-warn)] text-xs font-mono font-600 mb-1.5">⚡ Key insight</p>
+            <p class="text-[var(--color-muted)] text-xs leading-relaxed">
+              Your Mongoose schema and your Zod schema will define the <em>same rules</em>. Zod validates on the frontend before sending the request. Mongoose validates on the backend before saving to the DB. <strong class="text-[var(--color-text)]">Double protection.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 4 · ZOD SCHEMA
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">04 · Zod Schema</p>
+      <h2 class="font-display text-2xl font-700 mb-2">Frontend Validation</h2>
+      <p class="text-[var(--color-muted)] text-sm mb-8">Write this once, get automatic error messages everywhere.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">📄 schemas/noteSchema.js</p>
+          <div class="code-block p-5">
+<span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">'zod'</span><br><br>
+<span class="kw">export const</span> noteSchema = z.<span class="fn">object</span>({<br>
+&nbsp;&nbsp;<span class="key">title</span>: z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">string</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">min</span>(<span class="num">3</span>, <span class="str">'Title needs at least 3 characters'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">max</span>(<span class="num">80</span>, <span class="str">'Title is too long'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">trim</span>(),<br><br>
+&nbsp;&nbsp;<span class="key">content</span>: z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">string</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">min</span>(<span class="num">1</span>, <span class="str">'Content cannot be empty'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">trim</span>(),<br><br>
+&nbsp;&nbsp;<span class="key">tag</span>: z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">enum</span>([<span class="str">'work'</span>, <span class="str">'ideas'</span>, <span class="str">'personal'</span>, <span class="str">'study'</span>])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.<span class="fn">default</span>(<span class="str">'personal'</span>),<br>
+})<br><br>
+<span class="cm">// TypeScript users: export the inferred type</span><br>
+<span class="kw">export type</span> NoteFormData = z.<span class="fn">infer</span>&lt;<span class="kw">typeof</span> noteSchema&gt;
+          </div>
+        </div>
+
+        <div>
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">📄 NoteForm.jsx — RHF + Zod connected</p>
+          <div class="code-block p-5">
+<span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="str">'react-hook-form'</span><br>
+<span class="kw">import</span> { zodResolver } <span class="kw">from</span> <span class="str">'@hookform/resolvers/zod'</span><br>
+<span class="kw">import</span> { noteSchema } <span class="kw">from</span> <span class="str">'../schemas/noteSchema'</span><br><br>
+<span class="kw">function</span> <span class="fn">NoteForm</span>({ onSubmit }) {<br>
+&nbsp;&nbsp;<span class="kw">const</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">register</span>,        <span class="cm">// attaches input to RHF</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">handleSubmit</span>,   <span class="cm">// wraps your submit fn</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">formState</span>,      <span class="cm">// contains errors</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">reset</span>,          <span class="cm">// clears the form</span><br>
+&nbsp;&nbsp;} = <span class="fn">useForm</span>({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">resolver</span>: <span class="fn">zodResolver</span>(noteSchema),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">defaultValues</span>: { <span class="key">tag</span>: <span class="str">'personal'</span> },<br>
+&nbsp;&nbsp;})<br><br>
+&nbsp;&nbsp;<span class="kw">const</span> { <span class="key">errors</span> } = formState<br><br>
+&nbsp;&nbsp;<span class="kw">return</span> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">form</span> <span class="key">onSubmit</span>={handleSubmit(onSubmit)}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">input</span> {...<span class="fn">register</span>(<span class="str">'title'</span>)} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{errors.title &amp;&amp; &lt;<span class="fn">p</span>&gt;{errors.title.message}&lt;/<span class="fn">p</span>&gt;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">form</span>&gt;<br>
+&nbsp;&nbsp;)<br>
+}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 5 · API ROUTES
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">05 · API Routes</p>
+      <h2 class="font-display text-2xl font-700 mb-6">Express Endpoints</h2>
+
+      <div class="space-y-3 mb-8">
+        <!-- Route rows -->
+        <div class="comp-card flex items-start gap-4 py-3">
+          <span class="font-mono text-xs font-600 text-green-400 bg-green-400/10 px-2.5 py-1 rounded shrink-0 w-16 text-center">GET</span>
+          <div class="flex-1">
+            <code class="font-mono text-sm text-[var(--color-text)]">/api/notes</code>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Get all notes. Optional: <code class="font-mono text-xs">?tag=work</code> to filter by tag. Returns array sorted by newest first.</p>
+          </div>
+          <code class="font-mono text-xs text-[var(--color-accent2)] shrink-0">200 [ ]</code>
+        </div>
+
+        <div class="comp-card flex items-start gap-4 py-3">
+          <span class="font-mono text-xs font-600 text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded shrink-0 w-16 text-center">POST</span>
+          <div class="flex-1">
+            <code class="font-mono text-sm text-[var(--color-text)]">/api/notes</code>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Create a note. Body: <code class="font-mono text-xs">{"{ title, content, tag }"}</code>. Mongoose validates. Returns the created note.</p>
+          </div>
+          <code class="font-mono text-xs text-[var(--color-accent2)] shrink-0">201 {"{ }"}</code>
+        </div>
+
+        <div class="comp-card flex items-start gap-4 py-3">
+          <span class="font-mono text-xs font-600 text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded shrink-0 w-16 text-center">PUT</span>
+          <div class="flex-1">
+            <code class="font-mono text-sm text-[var(--color-text)]">/api/notes/:id</code>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Update a note by its MongoDB <code class="font-mono text-xs">_id</code>. Body: fields to update. Use <code class="font-mono text-xs">findByIdAndUpdate</code> with <code class="font-mono text-xs">runValidators: true</code>.</p>
+          </div>
+          <code class="font-mono text-xs text-[var(--color-accent2)] shrink-0">200 {"{ }"}</code>
+        </div>
+
+        <div class="comp-card flex items-start gap-4 py-3">
+          <span class="font-mono text-xs font-600 text-red-400 bg-red-400/10 px-2.5 py-1 rounded shrink-0 w-16 text-center">DELETE</span>
+          <div class="flex-1">
+            <code class="font-mono text-sm text-[var(--color-text)]">/api/notes/:id</code>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Delete a note by <code class="font-mono text-xs">_id</code>. Use <code class="font-mono text-xs">findByIdAndDelete</code>. Return <code class="font-mono text-xs">{"{ message: 'Deleted' }"}</code>.</p>
+          </div>
+          <code class="font-mono text-xs text-[var(--color-accent2)] shrink-0">200 {"{ }"}</code>
+        </div>
+      </div>
+
+      <!-- Controller example -->
+      <p class="text-xs font-mono text-[var(--color-muted)] mb-2">📄 controllers/noteController.js — GET with optional filter</p>
+      <div class="code-block p-5">
+<span class="kw">const</span> Note = <span class="fn">require</span>(<span class="str">'../models/Note'</span>)<br><br>
+<span class="kw">const</span> <span class="fn">getNotes</span> = <span class="kw">async</span> (req, res) => {<br>
+&nbsp;&nbsp;<span class="kw">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> { <span class="key">tag</span> } = req.query  <span class="cm">// ?tag=work</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> filter = tag ? { <span class="key">tag</span> } : {}  <span class="cm">// if tag exists, filter</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> notes = <span class="kw">await</span> Note.<span class="fn">find</span>(filter).<span class="fn">sort</span>({ <span class="key">createdAt</span>: <span class="num">-1</span> })<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.<span class="fn">json</span>(notes)<br>
+&nbsp;&nbsp;} <span class="kw">catch</span> (err) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ <span class="key">message</span>: err.message })<br>
+&nbsp;&nbsp;}<br>
+}
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 6 · COMPONENT LIBRARY
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">06 · Component Library</p>
+      <h2 class="font-display text-2xl font-700 mb-2">Reusable UI Templates</h2>
+      <p class="text-[var(--color-muted)] text-sm mb-8">Copy these styles directly into your Tailwind components.</p>
+
+      <!-- BUTTONS -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-[var(--color-muted)] mb-4">Buttons</p>
+        <div class="comp-card">
+          <div class="flex flex-wrap gap-3 mb-5">
+            <button class="btn-primary">Save Note</button>
+            <button class="btn-outline">Cancel</button>
+            <button class="btn-danger">Delete</button>
+            <button class="btn-ghost">Discard</button>
+            <button class="btn-primary" disabled style="opacity:0.4;cursor:not-allowed;">Saving…</button>
+          </div>
+          <div class="code-block p-4 text-xs">
+<span class="cm">{/* Primary */}</span><br>
+&lt;<span class="fn">button</span> <span class="key">className</span>=<span class="str">"bg-violet-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-40"</span>&gt;Save Note&lt;/<span class="fn">button</span>&gt;<br><br>
+<span class="cm">{/* Outline */}</span><br>
+&lt;<span class="fn">button</span> <span class="key">className</span>=<span class="str">"border border-zinc-700 text-zinc-200 text-sm px-5 py-2.5 rounded-lg hover:border-violet-500 hover:bg-zinc-800 transition-all"</span>&gt;Cancel&lt;/<span class="fn">button</span>&gt;<br><br>
+<span class="cm">{/* Danger */}</span><br>
+&lt;<span class="fn">button</span> <span class="key">className</span>=<span class="str">"border border-red-500/60 text-red-400 text-sm px-5 py-2.5 rounded-lg hover:bg-red-500/10 transition-colors"</span>&gt;Delete&lt;/<span class="fn">button</span>&gt;
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUTS -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-[var(--color-muted)] mb-4">Inputs — with RHF registration</p>
+        <div class="comp-card space-y-4">
+          <!-- Normal -->
+          <div>
+            <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Normal state</label>
+            <input class="demo-input" placeholder="Enter note title..." />
+          </div>
+          <!-- Focus -->
+          <div>
+            <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Focus state</label>
+            <input class="demo-input" style="border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);" value="React Hook Form notes" />
+          </div>
+          <!-- Error -->
+          <div>
+            <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Error state</label>
+            <input class="demo-input error" value="ab" />
+            <p class="text-[var(--color-danger)] text-xs font-mono mt-1.5">⚠ Title must be at least 3 characters</p>
+          </div>
+          <!-- Select -->
+          <div>
+            <label class="text-xs font-mono text-[var(--color-muted)] block mb-1.5">Select / Dropdown</label>
+            <select class="demo-input">
+              <option value="work">work</option>
+              <option value="ideas">ideas</option>
+              <option value="personal">personal</option>
+              <option value="study">study</option>
+            </select>
+          </div>
+
+          <div class="code-block p-4 text-xs">
+<span class="cm">{/* Input with RHF register + Zod error */}</span><br>
+&lt;<span class="fn">div</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="fn">input</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;{...<span class="fn">register</span>(<span class="str">'title'</span>)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">placeholder</span>=<span class="str">"Enter note title..."</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">className</span>=<span class="str">{`w-full bg-zinc-800 border rounded-lg px-3.5 py-2.5 text-sm</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">text-zinc-100 placeholder-zinc-500 outline-none transition-all</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">${errors.title ? 'border-red-500' : 'border-zinc-700 focus:border-violet-500'}`}</span><br>
+&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;{errors.title &amp;&amp; (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">p</span> <span class="key">className</span>=<span class="str">"text-red-400 text-xs font-mono mt-1"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{errors.title.message}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">p</span>&gt;<br>
+&nbsp;&nbsp;)}<br>
+&lt;/<span class="fn">div</span>&gt;
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTE CARD COMPONENT -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-[var(--color-muted)] mb-4">NoteCard component</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Preview -->
+          <div class="space-y-3">
+            <div class="note-card">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-display font-600 text-[var(--color-text)] text-sm">useForm replaces useState</h3>
+                <span class="tag tag-work ml-2 shrink-0">#work</span>
+              </div>
+              <p class="text-[var(--color-muted)] text-xs leading-relaxed">The register() function connects the input to RHF internally. No useState needed for each field.</p>
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]">
+                <span class="text-[var(--color-muted)] text-xs font-mono">Mar 19, 2026</span>
+                <div class="flex gap-1">
+                  <button class="btn-ghost text-xs py-0.5 px-2">Edit</button>
+                  <button class="btn-ghost text-xs py-0.5 px-2 text-[var(--color-danger)]">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Code -->
+          <div class="code-block p-4 text-xs">
+<span class="kw">function</span> <span class="fn">NoteCard</span>({ note, onEdit, onDelete }) {<br>
+&nbsp;&nbsp;<span class="kw">return</span> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">div</span> <span class="key">className</span>=<span class="str">"bg-zinc-800/50 border border-zinc-700<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rounded-xl p-4 hover:border-violet-500/50<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hover:-translate-y-0.5 transition-all cursor-pointer"</span>&gt;<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">{/* Header */}</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">div</span> <span class="key">className</span>=<span class="str">"flex items-start justify-between mb-2"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">h3</span> <span class="key">className</span>=<span class="str">"font-semibold text-zinc-100 text-sm"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{note.title}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">h3</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">TagBadge</span> tag={note.tag} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">{/* Content */}</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">p</span> <span class="key">className</span>=<span class="str">"text-zinc-400 text-xs line-clamp-3"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{note.content}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">p</span>&gt;<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">{/* Footer */}</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">div</span> <span class="key">className</span>=<span class="str">"flex justify-between items-center mt-3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pt-3 border-t border-zinc-700"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">span</span> <span class="key">className</span>=<span class="str">"text-zinc-500 text-xs"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<span class="kw">new</span> <span class="fn">Date</span>(note.createdAt).<span class="fn">toLocaleDateString</span>()}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">span</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">div</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">button</span> <span class="key">onClick</span>={() => <span class="fn">onEdit</span>(note)}&gt;Edit&lt;/<span class="fn">button</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">button</span> <span class="key">onClick</span>={() => <span class="fn">onDelete</span>(note._id)}&gt;Delete&lt;/<span class="fn">button</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">div</span>&gt;<br>
+&nbsp;&nbsp;)<br>
+}
+          </div>
+        </div>
+      </div>
+
+      <!-- TAG BADGES -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-[var(--color-muted)] mb-4">Tag badges — TagBadge component</p>
+        <div class="comp-card">
+          <div class="flex flex-wrap gap-3 mb-5">
+            <span class="tag tag-work">#work</span>
+            <span class="tag tag-ideas">#ideas</span>
+            <span class="tag tag-personal">#personal</span>
+            <span class="tag tag-study">#study</span>
+          </div>
+          <div class="code-block p-4 text-xs">
+<span class="kw">const</span> tagStyles = {<br>
+&nbsp;&nbsp;<span class="key">work</span>:     <span class="str">'bg-violet-500/15 text-violet-300 border border-violet-500/30'</span>,<br>
+&nbsp;&nbsp;<span class="key">ideas</span>:    <span class="str">'bg-teal-500/15 text-teal-300 border border-teal-500/30'</span>,<br>
+&nbsp;&nbsp;<span class="key">personal</span>: <span class="str">'bg-orange-500/15 text-orange-300 border border-orange-500/30'</span>,<br>
+&nbsp;&nbsp;<span class="key">study</span>:    <span class="str">'bg-red-500/15 text-red-300 border border-red-500/30'</span>,<br>
+}<br><br>
+<span class="kw">function</span> <span class="fn">TagBadge</span>({ tag }) {<br>
+&nbsp;&nbsp;<span class="kw">return</span> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="fn">span</span> <span class="key">className</span>={`text-xs font-mono px-2.5 py-0.5 rounded-full ${tagStyles[tag]}`}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{tag}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="fn">span</span>&gt;<br>
+&nbsp;&nbsp;)<br>
+}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 7 · FOLDER STRUCTURE
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">07 · Project Structure</p>
+      <h2 class="font-display text-2xl font-700 mb-6">Folder Layout</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Backend -->
+        <div>
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">Backend (Express)</p>
+          <div class="code-block p-5">
+<span class="key">server/</span><br>
+├── <span class="key">models/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">Note.js</span>          <span class="cm">← Mongoose schema</span><br>
+├── <span class="key">controllers/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">noteController.js</span> <span class="cm">← Logic here</span><br>
+├── <span class="key">routes/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">noteRoutes.js</span>    <span class="cm">← Route wiring</span><br>
+├── <span class="key">middleware/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">errorHandler.js</span>  <span class="cm">← Central errors</span><br>
+└── <span class="str">server.js</span>            <span class="cm">← Entry point</span>
+          </div>
+        </div>
+        <!-- Frontend -->
+        <div>
+          <p class="text-xs font-mono text-[var(--color-muted)] mb-2">Frontend (React + Vite)</p>
+          <div class="code-block p-5">
+<span class="key">client/src/</span><br>
+├── <span class="key">components/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="str">NoteCard.jsx</span>     <span class="cm">← Note display</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="str">NoteForm.jsx</span>     <span class="cm">← RHF + Zod form</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="str">TagBadge.jsx</span>     <span class="cm">← Colored tag</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">EmptyState.jsx</span>   <span class="cm">← Empty message</span><br>
+├── <span class="key">schemas/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">noteSchema.js</span>    <span class="cm">← Zod schema</span><br>
+├── <span class="key">hooks/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="str">useNotes.js</span>      <span class="cm">← React Query hooks</span><br>
+└── <span class="str">App.jsx</span>              <span class="cm">← Root component</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="fancy" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION 8 · BUILD ORDER
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <p class="section-label mb-3">08 · Build Order</p>
+      <h2 class="font-display text-2xl font-700 mb-2">Do it in this exact sequence</h2>
+      <p class="text-[var(--color-muted)] text-sm mb-8">Each step compiles in a testable unit. Never skip ahead.</p>
+
+      <div class="space-y-3">
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">1</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">Backend: Note model + all 4 routes</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Test with Postman or Thunder Client. Make sure GET, POST, PUT, DELETE all work before touching the frontend.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">2</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">Frontend: Static layout, no logic</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Build NoteCard and the page layout with hardcoded fake data. Get it looking right first.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">3</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">React Query: fetch and display real notes</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Replace your hardcoded data with <code class="font-mono text-xs">useQuery</code>. Notes now load from MongoDB.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">4</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">RHF + Zod: the add note form</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Write the Zod schema first. Then <code class="font-mono text-xs">useForm</code> with <code class="font-mono text-xs">zodResolver</code>. Submit → <code class="font-mono text-xs">useMutation</code> → invalidate. This is the entire lesson.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">5</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">Edit + Delete actions</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Inline edit uses <code class="font-mono text-xs">useForm</code> with <code class="font-mono text-xs">defaultValues</code> prefilled. Delete uses <code class="font-mono text-xs">useMutation</code> same as create.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 comp-card">
+          <div class="step-badge">6</div>
+          <div>
+            <p class="font-display font-600 text-[var(--color-text)] text-sm">Tag filter (client-side, no API call)</p>
+            <p class="text-[var(--color-muted)] text-xs mt-1">Store the active tag in <code class="font-mono text-xs">useState</code>. Filter the notes array locally. Simple, fast — and you'll notice you don't need Zustand for this.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════ -->
+    <footer class="border-t border-[var(--color-border)] pt-8 pb-4 flex items-center justify-between">
+      <div>
+        <p class="font-display font-700 text-[var(--color-text)] text-sm">NoteApp · Project 3 of 7</p>
+        <p class="text-[var(--color-muted)] text-xs mt-0.5 font-mono">Next: Project 4 → Link Bookmarker with JWT Auth</p>
+      </div>
+      <div class="flex gap-2">
+        <span class="tag tag-work">RHF</span>
+        <span class="tag tag-ideas">Zod</span>
+        <span class="tag tag-personal">MERN</span>
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>
