@@ -3,6 +3,7 @@ import cors from "cors";
 
 import { connectDB } from "./config/database.js";
 import globalErrorHandler from "./middleware/errorMiddleware.js";
+import notesRouter from "./routes/notes.routes.js";
 
 const app = express();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/notes", notesRouter);
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello from the server!");
