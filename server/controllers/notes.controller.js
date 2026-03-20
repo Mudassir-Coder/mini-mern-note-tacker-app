@@ -1,12 +1,8 @@
-import NotesModel from "../model/note.model";
-import AppError from "../utils/appError";
+import NotesModel from "../model/note.model.js";
+import AppError from "../utils/appError.js";
 
 export const createNote = async (req, res) => {
   const { title, content, tag } = req.body;
-  const existingNote = NotesModel.findOne({ title });
-  if (existingNote) {
-    throw new AppError(`This note's title ${title} is already exisit`, 400);
-  }
   const note = await NotesModel.create({ title, content, tag });
   res.status(201).send({ message: "Note Created Successfully", note });
 };
@@ -14,11 +10,11 @@ export const createNote = async (req, res) => {
 export const getNotes = async (req, res) => {
   const { tag } = req.query;
   const filter = tag ? { tag } : {};
-  const note = NotesModel.find({ filter }).sort({ createdAt: -1 });
-  if (!note) {
+  const notes = await NotesModel.find(filter).sort({ createdAt: -1 });
+  if (!notes) {
     throw new AppError("Note does not exist please try creating new one", 404);
   }
-  res.status(200).send({ note });
+  res.status(200).send({ notes });
 };
 
 export const updateNote = async (req, res) => {
@@ -27,7 +23,12 @@ export const updateNote = async (req, res) => {
   if (!id) {
     throw new AppError("Please provide an ID of the note");
   }
-  const note = NotesModel.findByIdAndUpdate({ id }, { title, content, tag });
+  const note = await NotesModel.findByIdAndUpdate(
+    id,
+    { title, content, tag },
+    { returnDocument: "after", runValidators: true },
+  );
+
   if (!note) {
     throw new AppError(
       "Notes does not exists please try creating new one",
@@ -39,7 +40,7 @@ export const updateNote = async (req, res) => {
 
 export const deleteNote = async (req, res) => {
   const { id } = req.params;
-  const note = NotesModel.findByIdAndDelete({ id });
+  const note = await NotesModel.findByIdAndDelete(id);
   if (!note) {
     throw new AppError(
       "that note does not exist please try creating new one",
